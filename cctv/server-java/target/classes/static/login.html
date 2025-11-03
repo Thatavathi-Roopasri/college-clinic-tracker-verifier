@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login - Clinic Tracker</title>
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f4f6fb;color:#222;padding:32px}
+    .card{max-width:520px;margin:40px auto;padding:20px;border-radius:8px;background:#fff;box-shadow:0 8px 28px rgba(12,24,48,0.06)}
+    label{display:block;margin-top:12px;font-size:14px}
+    input,select{width:100%;padding:10px;margin-top:6px;border:1px solid #e1e6ef;border-radius:6px}
+    button{margin-top:16px;padding:10px 14px;border:0;background:#0b5fff;color:#fff;border-radius:6px;cursor:pointer}
+    pre{background:#f7f9ff;border:1px solid #e6ecff;padding:12px;border-radius:6px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Backend Login (served on port 8080)</h2>
+    <p>This page is served by the Spring Boot backend at <code>/login.html</code> and POSTs to <code>/api/auth/login</code>.</p>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="admin@klh.edu.in" required />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" value="admin123" required />
+      <label for="role">Role</label>
+      <select id="role" name="role">
+        <option value="admin">admin</option>
+        <option value="hod">hod</option>
+        <option value="faculty">faculty</option>
+        <option value="clinic">clinic</option>
+        <option value="student">student</option>
+      </select>
+      <button type="submit">Login</button>
+    </form>
+    <h3>Result</h3>
+    <pre id="result">(no request yet)</pre>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const payload = { email: document.getElementById('email').value, password: document.getElementById('password').value, role: document.getElementById('role').value };
+      const result = document.getElementById('result');
+      result.textContent = 'Sending...';
+      try {
+        const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const txt = await res.text();
+        result.textContent = `HTTP ${res.status} ${res.statusText}\n\n${txt}`;
+      } catch (e) {
+        result.textContent = 'Request failed: ' + e.message;
+      }
+    });
+  </script>
+</body>
+</html>

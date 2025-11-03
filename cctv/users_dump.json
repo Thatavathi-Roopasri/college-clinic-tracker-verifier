@@ -1,0 +1,477 @@
+﻿[
+    {
+        "_id":  "69076fd4cae91ca601f0bf82",
+        "email":  "student@klh.edu.in",
+        "role":  "student",
+        "name":  "Student",
+        "createdAt":  "2025-11-02T14:51:00.150Z",
+        "updatedAt":  "2025-11-02T14:51:00.150Z",
+        "__v":  0
+    },
+    {
+        "_id":  "69076fd3cae91ca601f0bf7f",
+        "email":  "faculty@klh.edu.in",
+        "role":  "faculty",
+        "name":  "Faculty",
+        "createdAt":  "2025-11-02T14:50:59.918Z",
+        "updatedAt":  "2025-11-02T14:50:59.918Z",
+        "__v":  0
+    },
+    {
+        "_id":  "69076fd3cae91ca601f0bf7c",
+        "email":  "clinic@klh.edu.in",
+        "role":  "clinic",
+        "name":  "Clinic Staff",
+        "createdAt":  "2025-11-02T14:50:59.676Z",
+        "updatedAt":  "2025-11-02T14:50:59.676Z",
+        "__v":  0
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8189",
+        "name":  "Student40",
+        "email":  "241003040@klh.edu.in",
+        "password":  "241003040",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817d",
+        "name":  "Student28",
+        "email":  "241003028@klh.edu.in",
+        "password":  "241003028",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8188",
+        "name":  "Student39",
+        "email":  "241003039@klh.edu.in",
+        "password":  "241003039",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8187",
+        "name":  "Student38",
+        "email":  "241003038@klh.edu.in",
+        "password":  "241003038",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8186",
+        "name":  "Student37",
+        "email":  "241003037@klh.edu.in",
+        "password":  "241003037",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8185",
+        "name":  "Student36",
+        "email":  "241003036@klh.edu.in",
+        "password":  "241003036",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8184",
+        "name":  "Student35",
+        "email":  "241003035@klh.edu.in",
+        "password":  "241003035",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8183",
+        "name":  "Student34",
+        "email":  "241003034@klh.edu.in",
+        "password":  "241003034",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8182",
+        "name":  "Student33",
+        "email":  "241003033@klh.edu.in",
+        "password":  "241003033",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8181",
+        "name":  "Student32",
+        "email":  "241003032@klh.edu.in",
+        "password":  "241003032",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8180",
+        "name":  "Student31",
+        "email":  "241003031@klh.edu.in",
+        "password":  "241003031",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817f",
+        "name":  "Student30",
+        "email":  "241003030@klh.edu.in",
+        "password":  "241003030",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817e",
+        "name":  "Student29",
+        "email":  "241003029@klh.edu.in",
+        "password":  "241003029",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817c",
+        "name":  "Student27",
+        "email":  "241003027@klh.edu.in",
+        "password":  "241003027",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818a",
+        "name":  "Student41",
+        "email":  "241003041@klh.edu.in",
+        "password":  "241003041",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818b",
+        "name":  "Student42",
+        "email":  "241003042@klh.edu.in",
+        "password":  "241003042",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818c",
+        "name":  "Student43",
+        "email":  "241003043@klh.edu.in",
+        "password":  "241003043",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818d",
+        "name":  "Student44",
+        "email":  "241003044@klh.edu.in",
+        "password":  "241003044",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818e",
+        "name":  "Student45",
+        "email":  "241003045@klh.edu.in",
+        "password":  "241003045",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a818f",
+        "name":  "Student46",
+        "email":  "241003046@klh.edu.in",
+        "password":  "241003046",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8190",
+        "name":  "Student47",
+        "email":  "241003047@klh.edu.in",
+        "password":  "241003047",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8191",
+        "name":  "Student48",
+        "email":  "241003048@klh.edu.in",
+        "password":  "241003048",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8192",
+        "name":  "Student49",
+        "email":  "241003049@klh.edu.in",
+        "password":  "241003049",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8193",
+        "name":  "Student50",
+        "email":  "241003050@klh.edu.in",
+        "password":  "241003050",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8194",
+        "name":  "Clinic Staff Member 1",
+        "email":  "clinic_staff1@klh.edu.in",
+        "password":  "clinic123",
+        "role":  "clinic",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8195",
+        "name":  "Clinic Staff Member 2",
+        "email":  "clinic_staff2@klh.edu.in",
+        "password":  "clinic123",
+        "role":  "clinic",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8196",
+        "name":  "Clinic Staff Member 3",
+        "email":  "clinic_staff3@klh.edu.in",
+        "password":  "clinic123",
+        "role":  "clinic",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a816e",
+        "name":  "Student13",
+        "email":  "241003013@klh.edu.in",
+        "password":  "241003013",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd21",
+        "name":  "Rahul",
+        "email":  "241003002@klh.edu.in",
+        "password":  "241003002",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd22",
+        "name":  "Priya",
+        "email":  "241003003@klh.edu.in",
+        "password":  "241003003",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd23",
+        "name":  "Arjun",
+        "email":  "241003004@klh.edu.in",
+        "password":  "241003004",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd24",
+        "name":  "Sneha",
+        "email":  "241003005@klh.edu.in",
+        "password":  "241003005",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd25",
+        "name":  "Kiran",
+        "email":  "241003006@klh.edu.in",
+        "password":  "241003006",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd26",
+        "name":  "Divya",
+        "email":  "241003007@klh.edu.in",
+        "password":  "241003007",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd27",
+        "name":  "Manoj",
+        "email":  "241003008@klh.edu.in",
+        "password":  "241003008",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd28",
+        "name":  "Anjali",
+        "email":  "241003009@klh.edu.in",
+        "password":  "241003009",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd29",
+        "name":  "Ravi",
+        "email":  "241003010@klh.edu.in",
+        "password":  "241003010",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd2a",
+        "name":  "Dr. Rajesh Kumar",
+        "email":  "faculty1@klh.edu.in",
+        "password":  "faculty123",
+        "role":  "faculty",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd2c",
+        "name":  "Head of Department",
+        "email":  "hod@klh.edu.in",
+        "password":  "hod123",
+        "role":  "hod",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd2d",
+        "name":  "HOD Science",
+        "email":  "hod2@klh.edu.in",
+        "password":  "hod2123",
+        "role":  "hod",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a816c",
+        "name":  "Student11",
+        "email":  "241003011@klh.edu.in",
+        "password":  "241003011",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a816d",
+        "name":  "Student12",
+        "email":  "241003012@klh.edu.in",
+        "password":  "241003012",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "69036e246efc55c87056dd20",
+        "name":  "Swathi",
+        "email":  "241003001@klh.edu.in",
+        "password":  "241003001",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a816f",
+        "name":  "Student14",
+        "email":  "241003014@klh.edu.in",
+        "password":  "241003014",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8170",
+        "name":  "Student15",
+        "email":  "241003015@klh.edu.in",
+        "password":  "241003015",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8171",
+        "name":  "Student16",
+        "email":  "241003016@klh.edu.in",
+        "password":  "241003016",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8172",
+        "name":  "Student17",
+        "email":  "241003017@klh.edu.in",
+        "password":  "241003017",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8173",
+        "name":  "Student18",
+        "email":  "241003018@klh.edu.in",
+        "password":  "241003018",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8174",
+        "name":  "Student19",
+        "email":  "241003019@klh.edu.in",
+        "password":  "241003019",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8175",
+        "name":  "Student20",
+        "email":  "241003020@klh.edu.in",
+        "password":  "241003020",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8176",
+        "name":  "Student21",
+        "email":  "241003021@klh.edu.in",
+        "password":  "241003021",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8177",
+        "name":  "Student22",
+        "email":  "241003022@klh.edu.in",
+        "password":  "241003022",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8178",
+        "name":  "Student23",
+        "email":  "241003023@klh.edu.in",
+        "password":  "241003023",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a8179",
+        "name":  "Student24",
+        "email":  "241003024@klh.edu.in",
+        "password":  "241003024",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817a",
+        "name":  "Student25",
+        "email":  "241003025@klh.edu.in",
+        "password":  "241003025",
+        "role":  "student",
+        "active":  true
+    },
+    {
+        "_id":  "690375c3f047dd3da47a817b",
+        "name":  "Student26",
+        "email":  "241003026@klh.edu.in",
+        "password":  "241003026",
+        "role":  "student",
+        "active":  true
+    }
+]

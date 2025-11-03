@@ -1,0 +1,875 @@
+/* Smooth UI transitions */
+:root{ --anim-fast:180ms; --anim:260ms; --e:ease; }
+
+/* Smoothness & accessibility enhancements */
+html {
+  /* Smooth scrolling for in-page navigation */
+  scroll-behavior: smooth;
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* prevent horizontal scroll */
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* Gentle default transitions used across interactive elements */
+button, input, select, textarea, .nav-btn, .primary-btn, .secondary-btn, .card, .log-entry {
+  transition: background-color 200ms var(--e), color 200ms var(--e), transform 140ms var(--e), box-shadow 200ms var(--e), border-color 200ms var(--e);
+}
+
+/* Slight easing for page-level view switches */
+.main-content, .app-shell, header, .role-selection-container {
+  transition: opacity 260ms var(--e), transform 260ms var(--e);
+}
+
+/* Make focus states smoother and more visible */
+button:focus, input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 8px 20px rgba(70,138,154,0.12);
+  transform: translateY(-1px);
+}
+
+/* Micro-interaction: subtle hover lift for actionable cards and rows */
+.log-entry:hover, .card:hover, .role-card:hover, .nav-btn:hover {
+  transform: translateY(-4px);
+}
+
+/* Smooth opacity transition for toast */
+.toast { transition: opacity 220ms var(--e), transform 220ms var(--e); }
+
+
+.view{ opacity:0; transform:translateY(6px); transition:opacity var(--anim) var(--e), transform var(--anim) var(--e); }
+.view.active{ opacity:1; transform:translateY(0); }
+
+@keyframes fadeSlideIn{ from{ opacity:0; transform:translateY(8px) scale(.98);} to{ opacity:1; transform:translateY(0) scale(1);} }
+.animate-in{ animation:fadeSlideIn 320ms var(--e) both; }
+
+.card{ transition: box-shadow var(--anim) var(--e), transform var(--anim-fast) var(--e); }
+.card:hover{ transform: translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.08); }
+
+.nav-btn{ transition: background var(--anim-fast) var(--e), color var(--anim-fast) var(--e), transform 120ms var(--e); }
+.nav-btn:active{ transform: scale(.98); }
+
+.secondary-btn, .primary-btn{ transition: background var(--anim-fast) var(--e), color var(--anim-fast) var(--e), transform 120ms var(--e), box-shadow var(--anim-fast) var(--e); }
+.secondary-btn:active, .primary-btn:active{ transform: translateY(1px); }
+
+/* Celebration overlay */
+.celebrate-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.35); display:none; align-items:center; justify-content:center; z-index:9999; backdrop-filter:saturate(120%) blur(2px); }
+.celebrate-card{ background:#ffffff; border-radius:16px; padding:18px 20px; box-shadow:0 16px 42px rgba(0,0,0,0.18); max-width:520px; width:92%; animation:fadeSlideIn 300ms var(--e) both; text-align:center; }
+.celebrate-title{ font-size:18px; font-weight:800; color:#155E2D; display:flex; align-items:center; justify-content:center; gap:8px; }
+.celebrate-tip{ margin-top:8px; font-size:14px; color:#333; }
+.chip{ display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #E5E5E5; font-size:12px; color:#555; }
+
+/* Minimal confetti */
+.confetti{ position:fixed; left:50%; top:12px; transform:translateX(-50%); pointer-events:none; z-index:9999; }
+.confetti-piece{ position:absolute; width:8px; height:12px; opacity:0; border-radius:2px; animation:confettiFall 900ms ease-out forwards; }
+@keyframes confettiFall{
+  0%{ transform: translate3d(var(--x,0),-10px,0) rotate(0deg); opacity:1; }
+  100%{ transform: translate3d(var(--x,0), 120px,0) rotate(360deg); opacity:0; }
+}
+/* ---------- GENERAL STYLES ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #EEEEEE;
+  color: #0F0E0E;
+  min-height: 100vh;
+}
+
+header {
+  background: #0F0E0E;
+  color: #EEEEEE;
+  padding: 25px 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.header-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Faculty header: position relative so we can place a top-right logout button */
+#facultyDashboard > header { position: relative; padding-right: 86px; }
+
+/* Hide any top-logout by default to avoid accidental full-width / duplicate buttons */
+.top-logout { display: none; }
+
+/* Scoped compact top-right logout button used inside faculty, clinic, hod and student headers */
+#facultyDashboard > header .top-logout,
+#clinicDashboard > header .top-logout,
+#hodDashboard > header .top-logout,
+#studentDashboard > header .top-logout {
+  display: inline-flex;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #FFFFFF;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  min-width: 0;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+  transition: transform 120ms var(--e), box-shadow 160ms var(--e), background-color 140ms var(--e);
+}
+#facultyDashboard > header .top-logout i { font-size: 16px; }
+#facultyDashboard > header .top-logout:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.34); }
+#studentDashboard > header .top-logout i { font-size: 16px; }
+#studentDashboard > header .top-logout:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.34); }
+
+/* On smaller screens, make the button even more compact */
+@media (max-width: 600px) {
+  #facultyDashboard > header { padding-right: 56px; }
+  #facultyDashboard > header .top-logout { top: 10px; right: 10px; padding: 6px; width:36px; height:36px; font-size: 12px; }
+}
+
+/* ---------- ROLE SELECTION PAGE ---------- */
+#roleSelectionPage {
+  /* Make the role selection a fixed fullscreen overlay so users cannot scroll to the dashboard
+     before logging in. Keeps the same centered layout and prevents all scrolling. */
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #FFFFFF; /* fully opaque to avoid any visual bleed-through */
+  padding: 20px;
+  overflow: hidden; /* prevent scrolling inside role selection */
+  z-index: 99999; /* sit above the app shell */
+  overscroll-behavior: contain; /* prevent scroll chaining to underlying content */
+}
+
+/* Utility class to lock page scroll when overlays are visible */
+html.no-scroll,
+html.no-scroll body,
+body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+  width: 100% !important;
+  position: fixed !important;
+}
+
+.role-selection-container {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+  border: 1px solid #E5E5E5;
+}
+
+.auth-logo {
+  width: 80px;
+  height: 80px;
+  background: #468A9A;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 30px;
+  position: relative;
+  overflow: hidden;
+  list-style: none;
+}
+/* Ensure no pseudo markers render on the circular logo */
+.auth-logo::before,
+.auth-logo::after {
+  content: none !important;
+}
+
+.auth-title {
+  font-size: 28px;
+  color: #0F0E0E;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.auth-subtitle {
+  color: #666;
+  margin-bottom: 40px;
+  font-size: 16px;
+}
+
+.role-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 25px;
+  margin-top: 50px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.role-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 35px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  border: 1px solid #E5E5E5;
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  width: 220px;
+}
+
+.role-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  border-color: #468A9A;
+}
+
+.role-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  color: white;
+  background: #468A9A;
+}
+
+.role-card h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0F0E0E;
+  margin-bottom: 12px;
+}
+
+.role-card p {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ---------- AUTHENTICATION PAGE ---------- */
+#authPage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #EEEEEE;
+  padding: 20px;
+  z-index: 99998; /* just below role selection */
+  overflow: hidden; /* prevent scrolling while auth page is shown */
+}
+
+.auth-container {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+  border: 1px solid #E5E5E5;
+  position: relative;
+}
+
+.back-btn {
+  position: absolute;
+  top: 10px !important;
+  left: 10px !important;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  color: #468A9A;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(70, 138, 154, 0.1);
+}
+
+.auth-form {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #0F0E0E;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #E5E5E5;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #468A9A;
+  box-shadow: 0 0 0 3px rgba(70, 138, 154, 0.2);
+}
+
+/* ---------- PASSWORD CONTAINER ---------- */
+.password-container {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.password-input {
+  width: 100%;
+  padding: 15px 55px 15px 15px;
+  border: 2px solid #E5E5E5;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #468A9A;
+  box-shadow: 0 0 0 3px rgba(70, 138, 154, 0.2);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #468A9A;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px;
+  z-index: 10;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.password-toggle:hover {
+  color: #0F0E0E;
+  background-color: rgba(70, 138, 154, 0.12);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: #468A9A;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.email-constraint {
+  background: #FAFAFA;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #444;
+}
+
+/* ---------- ERROR MESSAGES ---------- */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  display: none;
+  font-size: 14px;
+}
+
+/* ---------- DASHBOARD STYLES ---------- */
+.dashboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.welcome-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #468A9A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+  border: 1px solid #E5E5E5;
+}
+
+/* ---------- QR SCANNER SECTION ---------- */
+.qr-scanner-section {
+  background: #FAFAFA;
+  border: 2px dashed #E5E5E5;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.scanner-btn {
+  background: #468A9A;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.scanner-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+#qr-reader {
+  max-width: 300px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#qr-reader-results {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(70, 138, 154, 0.08);
+  border-radius: 8px;
+  font-weight: 600;
+  color: #0F0E0E;
+}
+
+/* ---------- FORM STYLES ---------- */
+input, select, button {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #E5E5E5;
+  border-radius: 12px;
+  font-size: 16px;
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #468A9A;
+  box-shadow: 0 0 0 3px rgba(70, 138, 154, 0.2);
+}
+
+input[readonly] {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.edit-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #468A9A;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px;
+  width: auto;
+  height: auto;
+}
+
+.edit-btn:hover {
+  color: #0F0E0E;
+}
+
+.primary-btn {
+  background: #468A9A;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(116, 141, 174, 0.3);
+}
+
+.secondary-btn {
+  background: white;
+  color: #541212;
+  border: 2px solid #541212;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.secondary-btn:hover {
+  background: #541212;
+  color: white;
+}
+
+/* ---------- FACULTY ACTIONS ---------- */
+.faculty-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* ---------- LOGS ---------- */
+.log-entry {
+  background: #FAFAFA;
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  border-left: 4px solid #468A9A;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.log-name {
+  font-weight: 600;
+  color: #0F0E0E;
+  font-size: 18px;
+}
+
+.log-id {
+  background: #EEEEEE;
+  color: #0F0E0E;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.log-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #666;
+}
+
+.frequent-visitor {
+  background: #541212;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ---------- QR CODE ---------- */
+.qr-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.qr-container img {
+  border: 3px solid #468A9A;
+  border-radius: 12px;
+  padding: 10px;
+  background: white;
+}
+
+/* ---------- CHART ---------- */
+.chart-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+/* ---------- TOAST ---------- */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #468A9A;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  display: none;
+  z-index: 1000;
+  font-weight: 600;
+}
+
+.toast.error {
+  background: #541212;
+}
+
+/* Hide the browser scrollbar visually while keeping scrolling functional.
+   This makes the UI cleaner on desktop while preserving scroll behavior. */
+html, body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  width: 0; height: 0; background: transparent; /* Chrome, Safari, Opera */
+}
+
+/* ---------- APP SHELL WITH SIDEBAR ---------- */
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 90px);
+}
+
+.sidebar {
+  background: #0F0E0E;
+  color: #EEEEEE;
+  padding: 20px;
+}
+
+.side-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.side-user {
+  font-weight: 600;
+}
+
+.side-email {
+  font-size: 12px;
+  color: #CCCCCC;
+}
+
+.side-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-btn {
+  width: 100%;
+  background: transparent;
+  color: #EEEEEE;
+  border: 1px solid rgba(255,255,255,0.15);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.nav-btn.active {
+  background: #468A9A;
+  border-color: #468A9A;
+}
+
+.main-content {
+  padding: 24px;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+.card-title {
+  color: #0F0E0E;
+  margin-bottom: 20px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.letter-preview {
+  background: white;
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes shake {
+  0%, 20%, 40%, 60%, 80% { transform: translateX(0); }
+  10%, 30%, 50%, 70% { transform: translateX(-10px); }
+  15%, 35%, 55%, 75% { transform: translateX(10px); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .role-cards {
+    flex-wrap: wrap;
+  }
+  .role-card {
+    flex: 0 0 calc(50% - 10px);
+  }
+  
+  .auth-container {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+  
+  .header-title {
+    font-size: 24px;
+  }
+  
+  .faculty-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .password-input {
+    padding: 15px 50px 15px 15px;
+  }
+  
+  .password-toggle {
+    right: 8px;
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+}
+
+/* ---------- SCROLLBAR TWEAKS: keep sidebar scrollbar hidden (already covered by global rules) ---------- */
+.sidebar::-webkit-scrollbar { width: 0; height: 0; background: transparent; }
+
+/* If you prefer to hide the scrollbar on another element, replace `.sidebar` with the desired selector (e.g. `.main-content`). */

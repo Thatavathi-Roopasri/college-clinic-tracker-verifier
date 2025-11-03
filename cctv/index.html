@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Clinic Tracker & Verifier</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ROLE SELECTION PAGE -->
+<div id="roleSelectionPage">
+  <div class="role-selection-container">
+    <div class="auth-logo">
+      <i class="fas fa-user-md"></i>
+    </div>
+    <h1 class="auth-title">Welcome to Clinic Tracker</h1>
+    <p class="auth-subtitle">Please select your role to continue</p>
+    
+    <div class="role-cards">
+      <div class="role-card" data-role="faculty">
+        <div class="role-icon">
+          <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <h3>Faculty</h3>
+        <p>Verify student visits and view analytics</p>
+      </div>
+      
+      <div class="role-card" data-role="clinic">
+        <div class="role-icon">
+          <i class="fas fa-user-nurse"></i>
+        </div>
+        <h3>Clinic Staff</h3>
+        <p>Log patient visits and manage records</p>
+      </div>
+      
+      <div class="role-card" data-role="student">
+        <div class="role-icon">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <h3>Student</h3>
+        <p>View your clinic visit history</p>
+      </div>
+      <div class="role-card" data-role="hod">
+        <div class="role-icon">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <h3>HOD</h3>
+        <p>Review section attendance</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOD DASHBOARD -->
+<div id="hodDashboard" style="display: none;">
+  <header>
+    <div class="header-title">HOD Dashboard</div>
+    <div class="header-subtitle">Koneru Lakshmaiah University</div>
+    <!-- Compact logout button (top-right) for HOD portal -->
+    <button id="hodLogoutBtn" class="top-logout" title="Logout" aria-label="Logout">
+      <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+    </button>
+  </header>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="side-header">
+        <div class="user-avatar" id="hodUserAvatar">H</div>
+        <div class="side-user">
+          <div id="hodUserName">Welcome, HOD!</div>
+          <div id="hodUserEmail" class="side-email">hod@klh.edu.in</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-target="hod-attendance-view"><i class="fas fa-user-check"></i> Attendance</button>
+        <button class="nav-btn" data-target="hod-gatepass-view"><i class="fas fa-envelope-open-text"></i> Gate Pass Requests</button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <section id="hod-attendance-view" class="view active">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Section Attendance Overview</h3>
+          <div id="hodNotif" style="margin:8px 0 12px; padding:10px; background:#f8f9fa; border:1px solid #E5E5E5; border-radius:8px; font-size:14px; color:#333;"></div>
+          <div class="grid-2">
+            <div>
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <select id="hodDateSelect"></select>
+              </div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label class="form-label">Section</label>
+                <select id="hodSectionSelect"></select>
+              </div>
+            </div>
+          </div>
+          <div id="hodAttendanceSummary" style="margin-top:12px; font-size:14px; color:#333;"></div>
+          <div id="hodAttendanceDetails" style="margin-top:12px;"></div>
+        </div>
+      </section>
+      <section id="clinic-active-view" class="view">
+        <div class="card">
+          <h3 class="card-title">
+            <i class="fas fa-user-clock"></i> Active Patients (in clinic)
+          </h3>
+          <div id="activePatientsPageList" style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;
+               align-items:center; min-height:32px;"></div>
+        </div>
+      </section>
+      <section id="hod-gatepass-view" class="view">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-envelope-open-text"></i> Gate Pass Requests</h3>
+          <div id="hodGatePassList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+
+<!-- AUTHENTICATION PAGE -->
+<div id="authPage" style="display: none;">
+  <div class="auth-container">
+    <button class="back-btn" id="backToRoleSelection">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="auth-logo">
+      <i class="fas fa-user-md"></i>
+    </div>
+    <h1 class="auth-title" id="authTitle">Sign In as Faculty</h1>
+    <p class="auth-subtitle" id="authSubtitle">Enter your @klh.edu.in credentials</p>
+    
+    <!-- LOGIN FORM -->
+    <form class="auth-form" id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="Enter your @klh.edu.in email" required>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-container">
+          <input type="password" class="password-input" id="loginPassword" placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" id="passwordToggleBtn">
+            <i class="fas fa-eye" id="passwordToggleIcon"></i>
+          </button>
+        </div>
+        <button type="button" id="forgotPasswordBtn" class="link-btn" style="margin-top:6px; color:#2c7a7b; background:none; border:none; cursor:pointer; padding:0;">Forgot Password?</button>
+      </div>
+      
+      <div id="loginError" class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="loginErrorText"></span>
+      </div>
+      
+      <button type="submit" class="login-btn" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </button>
+    </form>
+
+    <div class="email-constraint">
+      <i class="fas fa-info-circle"></i>
+      Only @klh.edu.in email addresses are allowed
+    </div>
+  </div>
+</div>
+
+<!-- CLINIC STAFF DASHBOARD -->
+<div id="clinicDashboard" style="display: none;">
+  <header>
+    <div class="header-title">University Clinic System</div>
+    <div class="header-subtitle">Koneru Lakshmaiah University</div>
+      <!-- Compact logout button (top-right) for clinic portal -->
+      <button id="clinicLogoutBtn" class="top-logout" title="Logout" aria-label="Logout">
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+      </button>
+  </header>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="side-header">
+        <div class="user-avatar" id="clinicUserAvatar">C</div>
+        <div class="side-user">
+          <div id="clinicUserName">Welcome, Clinic Staff!</div>
+          <div id="clinicUserEmail" class="side-email">staff@klh.edu.in</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+  <button class="nav-btn active" data-target="clinic-log-view"><i class="fas fa-plus-circle"></i> Log Visit</button>
+  <!-- Active Patients nav item removed per user request. To restore, uncomment the line below. -->
+  <!-- <button class="nav-btn" data-target="clinic-active-view"><i class="fas fa-user-clock"></i> Active Patients</button> -->
+        <button class="nav-btn" data-target="clinic-recent-view"><i class="fas fa-history"></i> Recent Visits</button>
+      </nav>
+      <!-- Sidebar compact active list removed (moved back to main content only) -->
+    </aside>
+    <main class="main-content">
+      <section id="clinic-log-view" class="view active">
+        <div class="card">
+          <h3 class="card-title">
+            <i class="fas fa-plus-circle"></i> Log Patient Visit
+          </h3>
+          <!-- QR Scanner -->
+          <div style="display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:12px;">
+            <div style="display:flex; flex-direction:column; align-items:center;">
+              <button id="startScannerBtn" type="button" class="primary-btn" style="width:280px; margin:0 0 8px 0; background:#ff4757;">
+                <i class="fas fa-stop"></i> Stop Scanner
+              </button>
+              <div id="qr-reader" style="width: 280px; height: 280px; border-radius:8px; overflow:hidden; background:#000; display:block;"></div>
+              <div id="qr-reader-results" style="margin-top:6px; color:#2e7d32; font-size:14px;"></div>
+            </div>
+            <div style="flex:1; min-width:260px; max-width:420px; color:#666; font-size:13px;">
+              <p>Point the camera at a student's QR. The roll number will auto-fill into <strong>Student ID</strong>.</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Student Name</label>
+            <input type="text" id="studentName" placeholder="Enter student's full name" readonly>
+            <button type="button" class="edit-btn" id="editNameBtn">
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Student ID</label>
+            <input type="text" id="studentId" placeholder="Enter student ID" readonly>
+            <button type="button" class="edit-btn" id="editIdBtn">
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Symptoms</label>
+            <input list="symptomsList" id="symptoms" placeholder="Select or type symptoms">
+            <datalist id="symptomsList">
+              <option value="Fever">
+              <option value="Cough">
+              <option value="Headache">
+              <option value="Stomach Ache">
+              <option value="Cold & Flu">
+              <option value="Injury">
+              <option value="Chest Pain">
+              <option value="Dizziness">
+              <option value="Allergic Reaction">
+              <option value="Nausea">
+            </datalist>
+          </div>
+          <button class="primary-btn" id="logVisitBtn">
+            <i class="fas fa-save"></i> Log Entry
+          </button>
+          <!-- Mark Exit button removed as requested -->
+          <!-- <button class="secondary-btn" id="markExitBtn">
+            <i class="fas fa-sign-out-alt"></i> Mark Exit
+          </button> -->
+          <!-- QR Code preview removed -->
+        </div>
+        <!-- Active Patients (shown in clinic dashboard) -->
+        <div class="card" style="margin-top:12px;">
+          <h3 class="card-title">
+            <i class="fas fa-user-clock"></i> Active Patients (in clinic)
+          </h3>
+            <div style="display:flex; gap:8px; align-items:center; justify-content:space-between;">
+              <div style="font-size:13px; color:#666;">Patients currently inside the clinic are shown here.</div>
+              <div style="display:flex; gap:8px;">
+                <button class="secondary-btn" id="refreshActiveBtn" style="padding:6px 10px;">Refresh</button>
+                <!-- Seed demo patients button removed -->
+                <!-- <button class="secondary-btn" id="seedDemoBtn" style="padding:6px 10px;">Seed Demo Patients</button> -->
+              </div>
+            </div>
+            <div id="activePatientsList" style="margin-top:8px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; min-height:32px;"></div>
+        </div>
+      </section>
+      <section id="clinic-recent-view" class="view">
+        <div class="card">
+          <h3 class="card-title">
+            <i class="fas fa-history"></i> Recent Visits
+          </h3>
+          <div id="recentVisits"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- FACULTY DASHBOARD -->
+<div id="facultyDashboard" style="display: none;">
+  <header>
+    <div class="header-title">Faculty Dashboard</div>
+    <div class="header-subtitle">Koneru Lakshmaiah University</div>
+    <!-- Compact logout button (top-right) for faculty portal -->
+    <!-- Use icon-only button so header title stays centered and UI is compact -->
+    <button id="facultyLogoutBtn" class="top-logout" title="Logout" aria-label="Logout">
+      <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+    </button>
+  </header>
+  
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="side-header">
+        <div class="user-avatar" id="facultyUserAvatar">F</div>
+        <div class="side-user">
+          <div id="facultyUserName">Welcome, Faculty!</div>
+          <div id="facultyUserEmail" class="side-email">faculty@klh.edu.in</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-target="faculty-verify-view"><i class="fas fa-search"></i> Verify Visit</button>
+        <button class="nav-btn" data-target="faculty-attendance-view"><i class="fas fa-user-check"></i> Attendance</button>
+        <button class="nav-btn" data-target="faculty-manage-view"><i class="fas fa-layer-group"></i> Manage Sections</button>
+        <button class="nav-btn" data-target="faculty-reports-view"><i class="fas fa-chart-bar"></i> Reports</button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <section id="faculty-verify-view" class="view active">
+        <div class="card">
+          <h3 class="card-title">
+            <i class="fas fa-search"></i> Verify Student Visit
+          </h3>
+          <div class="form-group">
+            <label class="form-label">Student ID to Verify</label>
+            <input type="text" id="facultyIdInput" placeholder="Enter student ID to search">
+          </div>
+          <button class="primary-btn" id="verifyVisitBtn">
+            <i class="fas fa-search"></i> Search Records
+          </button>
+          <div id="facultyLogs"></div>
+          <div class="faculty-actions">
+            <button class="secondary-btn" id="printFacultyLogsBtn">
+              <i class="fas fa-print"></i> Print Student Records
+            </button>
+            <button class="secondary-btn" id="exportCSVBtn">
+              <i class="fas fa-download"></i> Download CSV
+            </button>
+            <button class="secondary-btn" id="printAllLogsBtn">
+              <i class="fas fa-print"></i> Print All Records
+            </button>
+          </div>
+        </div>
+      </section>
+      <section id="faculty-reports-view" class="view">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-chart-bar"></i> Visit Trends</h3>
+          <div class="chart-container">
+            <canvas id="visitChart"></canvas>
+          </div>
+        </div>
+      </section>
+      <section id="faculty-attendance-view" class="view">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-user-check"></i> Section Attendance</h3>
+          <div class="form-group">
+            <label class="form-label">Select Section</label>
+            <select id="attendanceSectionSelect"></select>
+          </div>
+          <div id="attendanceMeta" style="font-size:13px; color:#444; margin:8px 0 16px;">Students currently in clinic will be shown as <strong>Sick Room</strong>.</div>
+          <div id="attendanceList"></div>
+          <div class="faculty-actions" style="margin-top:16px;">
+            <button class="primary-btn" id="saveAttendanceBtn"><i class="fas fa-save"></i> Save Attendance</button>
+          </div>
+        </div>
+      </section>
+      <section id="faculty-manage-view" class="view">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-layer-group"></i> Manage Sections</h3>
+          <div class="grid-2">
+            <div>
+              <div class="form-group">
+                <label class="form-label">New Section Name</label>
+                <input type="text" id="newSectionName" placeholder="e.g., Section 4">
+              </div>
+              <button class="primary-btn" id="addSectionBtn"><i class="fas fa-plus"></i> Add Section</button>
+              <div id="sectionsList" style="margin-top:20px;"></div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label class="form-label">Choose Section</label>
+                <select id="manageSectionSelect"></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Add Roll Number</label>
+                <input type="text" id="newRollNumber" placeholder="e.g., 2410030033">
+              </div>
+              <button class="secondary-btn" id="addRollBtn"><i class="fas fa-user-plus"></i> Add Roll</button>
+              <div id="sectionRolls" style="margin-top:20px;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- STUDENT DASHBOARD -->
+<div id="studentDashboard" style="display: none;">
+  <header>
+    <div class="header-title">Student Portal</div>
+    <div class="header-subtitle">Koneru Lakshmaiah University</div>
+    <button class="top-logout" id="studentLogoutBtn" title="Logout">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </header>
+  
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="side-header">
+        <div class="user-avatar" id="studentUserAvatar">S</div>
+        <div class="side-user">
+          <div id="studentUserName">Welcome, Student!</div>
+          <div id="studentUserEmail" class="side-email">student@klh.edu.in</div>
+        </div>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-target="student-history-view"><i class="fas fa-history"></i> My History</button>
+        <button class="nav-btn" data-target="student-letters-view"><i class="fas fa-file-alt"></i> Letters</button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <section id="student-history-view" class="view active">
+        <div class="card">
+          <h3 class="card-title">
+            <i class="fas fa-history"></i> My Visit History
+          </h3>
+          <div class="form-group">
+            <label class="form-label">Your Student ID</label>
+            <input type="text" id="studentIdInput" placeholder="Enter your student ID">
+          </div>
+          <button class="primary-btn" id="showStudentLogsBtn">
+            <i class="fas fa-search"></i> Show My Visits
+          </button>
+          <div id="studentLogs"></div>
+          <button class="secondary-btn" id="printStudentLogsBtn">
+            <i class="fas fa-print"></i> Print My Records
+          </button>
+        </div>
+      </section>
+      <section id="student-letters-view" class="view">
+        <div class="card">
+          <h3 class="card-title"><i class="fas fa-file-alt"></i> Letter Generator</h3>
+          <div class="grid-2">
+            <div>
+              <div class="form-group">
+                <label class="form-label">Letter Type</label>
+                <select id="letterType">
+                  <option value="attendance">Attendance Low</option>
+                  <option value="gatepass">Gate Pass</option>
+                  <option value="indiscipline">Indiscipline</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Student Name</label>
+                <input type="text" id="letterStudentName" placeholder="Enter your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Year</label>
+                <input type="text" id="letterYear" placeholder="e.g., 2nd Year">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" id="letterDepartment" placeholder="e.g., CSE Department">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Roll Number</label>
+                <input type="text" id="letterRoll" placeholder="Enter your roll number">
+              </div>
+              <div class="form-group" id="attendanceReasonGroup" style="display:none;">
+                <label class="form-label">Reason (for Attendance)</label>
+                <input type="text" id="attendanceReason" placeholder="e.g., health issues / family emergency">
+              </div>
+              <div class="form-group" id="indisciplineReasonGroup" style="display:none;">
+                <label class="form-label">Incident (for Indiscipline)</label>
+                <input type="text" id="incidentReason" placeholder="e.g., misconduct during class hours">
+              </div>
+              <div class="form-group" id="facultyMetaGroup" style="display:none;">
+                <label class="form-label">Faculty/Staff Details</label>
+                <input type="text" id="facultyName" placeholder="Faculty/Staff Name" style="margin-bottom:8px;">
+                <input type="text" id="designation" placeholder="Designation">
+              </div>
+              <div class="form-group" id="gatePassGroup" style="display:none;">
+                <label class="form-label">Gate Pass Details</label>
+                <input type="text" id="gateReason" placeholder="Reason for leaving" style="margin-bottom:8px;">
+                <input type="time" id="timeOut" placeholder="Time Out">
+              </div>
+              <button class="primary-btn" id="generateLetterBtn"><i class="fas fa-magic"></i> Generate Letter</button>
+            </div>
+            <div>
+              <div id="letterPreview" class="letter-preview">
+                <p style="color:#666;">Fill the form to preview your letter here.</p>
+              </div>
+              <div class="faculty-actions">
+                <button class="secondary-btn" id="sendGatePassBtn"><i class="fas fa-paper-plane"></i> Send to HOD</button>
+                <span id="gatePassStatus" style="margin-left:8px; font-size:13px; color:#666;"></span>
+                <button class="secondary-btn" id="cancelPendingBtn" style="display:none;"><i class="fas fa-undo"></i> Cancel Pending</button>
+                <button class="secondary-btn" id="printLetterBtn"><i class="fas fa-print"></i> Print</button>
+                <button class="secondary-btn" id="downloadLetterBtn"><i class="fas fa-download"></i> Download PDF</button>
+              </div>
+              <div class="card" style="margin-top:12px;">
+                <h3 class="card-title"><i class="fas fa-list"></i> History</h3>
+                <div id="studentGatePassList"></div>
+                <div class="faculty-actions" style="margin-top:10px;">
+                  <button class="secondary-btn" id="clearMyRequestsBtn"><i class="fas fa-trash"></i> Clear My Requests</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast">Action completed successfully!</div>
+
+<script src="script.js?v=1731528000"></script>
+</body>
+</html>
