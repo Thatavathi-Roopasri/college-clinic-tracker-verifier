@@ -349,9 +349,17 @@ const STUDENT_DATABASE = {
 };
 
 // API base for backend persistence.
-// Force frontend to call the local backend on port 7070 so the UI always uses
-// the running Node backend at http://localhost:7070.
-const API_BASE = 'http://localhost:7070/api';
+// Use the local backend when running on localhost during development. When
+// deployed to Vercel (or any static host) the frontend will call the
+// relative '/api' path which the platform should rewrite/proxy to your
+// hosted backend (see vercel.json and cctv/VERCEL.md for instructions).
+const API_BASE = (function(){
+  try {
+    const host = (location && location.hostname) ? location.hostname : '';
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:7070/api';
+  } catch (e) {}
+  return '/api';
+})();
 
 async function apiGet(path) {
   const res = await fetch(`${API_BASE}${path}`);

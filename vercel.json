@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "college-clinic-tracker-front",
+  "builds": [
+    { "src": "cctv/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://REPLACE_WITH_YOUR_BACKEND_DOMAIN/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/cctv/$1"
+    }
+  ]
+}
