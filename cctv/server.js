@@ -42,6 +42,10 @@ if (SKIP_DB) {
 
 // Start server only after DB is connected (unless SKIP_DB=true). This ensures
 // the app models and routes operate against a ready MongoDB connection.
+// Start server helper (used by local runs). For Vercel serverless we will
+// import `app` and call `connectToMongo()` from the function wrapper. This
+// function is intentionally not invoked automatically so importing this file
+// doesn't start a long-running listener in serverless environments.
 async function startServer() {
   try {
     await connectToMongo();

@@ -1,0 +1,16 @@
+# Render service configuration — deploys the Node web service from the `cctv` folder.
+# When you connect this repository in Render, Render will use this file to
+# create/update services automatically. It does not include secrets — add
+# MONGO_URI and other sensitive env vars in the Render dashboard or CLI.
+
+services:
+  - type: web
+    name: college-clinic-tracker-verifier
+    env: node
+    plan: free
+    root: cctv
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    # health check used by Render to know the service is healthy
+    healthCheckPath: /api/health
