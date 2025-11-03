@@ -1,0 +1,5 @@
+﻿# project ignores
+cctv/node_modules/
+cctv/server-java/target/
+.DS_Store
+Thumbs.db
