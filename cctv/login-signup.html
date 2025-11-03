@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Portal Clinic Tracker - Login & Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-signup {
+            background: #f5f5f5;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-signup:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .toggle-text button {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .toggle-text button:hover {
+            color: #764ba2;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            border-left: 4px solid #3c3;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+            background: #f44336;
+        }
+
+        .strength-fill.weak {
+            width: 33%;
+            background: #f44336;
+        }
+
+        .strength-fill.medium {
+            width: 66%;
+            background: #ff9800;
+        }
+
+        .strength-fill.strong {
+            width: 100%;
+            background: #4caf50;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-option {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option:hover {
+            border-color: #667eea;
+        }
+
+        .role-option input {
+            display: none;
+        }
+
+        .role-option input:checked + label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .role-option.selected {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-signup {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">🏥 Clinic Tracker</div>
+                <div class="subtitle">Multi-Portal Management System</div>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div class="form-section active" id="loginForm">
+                <div class="error" id="loginError"></div>
+                <div class="success" id="loginSuccess"></div>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            placeholder="Enter your password"
+                            required
+                        >
+                    </div>
+
+                    <div class="loading" id="loginLoading">
+                        <div class="spinner"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-login">Sign In</button>
+                    </div>
+                </form>
+
+                <div class="toggle-text">
+                    New to the platform? 
+                    <button onclick="toggleForm()">Create Account</button>
+                </div>
+            </div>
+
+            <!-- SIGNUP FORM -->
+            <div class="form-section" id="signupForm">
+                <div class="error" id="signupError"></div>
+                <div class="success" id="signupSuccess"></div>
+
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="signupName" 
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="signupEmail" 
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input 
+                            type="password" 
+                            id="signupPassword" 
+                            placeholder="Min 6 characters"
+                            onchange="checkPasswordStrength()"
+                            required
+                        >
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="password-strength" id="strengthText"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            id="signupConfirmPassword" 
+                            placeholder="Confirm your password"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Account Type</label>
+                        <div class="role-selector">
+                            <div class="role-option selected">
+                                <input type="radio" id="roleStudent" name="role" value="student" checked>
+                                <label for="roleStudent">👨‍🎓 Student</label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="roleFaculty" name="role" value="faculty">
+                                <label for="roleFaculty">👨‍🏫 Faculty</label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="roleClinic" name="role" value="clinic">
+                                <label for="roleClinic">⚕️ Clinic Staff</label>
+                            </div>
+                            <div class="role-option">
+                                <input type="radio" id="roleHOD" name="role" value="hod">
+                                <label for="roleHOD">📋 HOD</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="signupLoading">
+                        <div class="spinner"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-login">Create Account</button>
+                        <button type="button" class="btn-signup" onclick="toggleForm()">Back to Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/auth';
+
+        // Toggle between Login and Signup forms
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+
+            loginForm.classList.toggle('active');
+            signupForm.classList.toggle('active');
+
+            // Clear errors
+            clearErrors();
+        }
+
+        // Clear all error messages
+        function clearErrors() {
+            document.getElementById('loginError').classList.remove('show');
+            document.getElementById('signupError').classList.remove('show');
+            document.getElementById('loginSuccess').classList.remove('show');
+            document.getElementById('signupSuccess').classList.remove('show');
+        }
+
+        // Show error message
+        function showError(formType, message) {
+            const errorElement = document.getElementById(formType + 'Error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Show success message
+        function showSuccess(formType, message) {
+            const successElement = document.getElementById(formType + 'Success');
+            successElement.textContent = message;
+            successElement.classList.add('show');
+        }
+
+        // Check password strength
+        function checkPasswordStrength() {
+            const password = document.getElementById('signupPassword').value;
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            strengthFill.className = 'strength-fill';
+
+            if (strength <= 2) {
+                strengthFill.classList.add('weak');
+                strengthText.textContent = '⚠️ Weak password';
+            } else if (strength <= 4) {
+                strengthFill.classList.add('medium');
+                strengthText.textContent = '⚡ Medium strength';
+            } else {
+                strengthFill.classList.add('strong');
+                strengthText.textContent = '✅ Strong password';
+            }
+        }
+
+        // Handle role selection
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.role-option').forEach(opt => opt.classList.remove('selected'));
+                this.closest('.role-option').classList.add('selected');
+            });
+        });
+
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            // Validation
+            if (!email || !password) {
+                showError('login', 'Please enter both email and password');
+                return;
+            }
+
+            document.getElementById('loginLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError('login', data.error || 'Login failed. Please try again.');
+                    return;
+                }
+
+                // Success!
+                showSuccess('login', `Welcome back, ${data.name}! ✅`);
+                
+                // Store token and user info
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.userId);
+                localStorage.setItem('userName', data.name);
+                localStorage.setItem('userRole', data.role);
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 2000);
+
+            } catch (error) {
+                showError('login', 'Network error. Please check your connection.');
+                console.error('Login error:', error);
+            } finally {
+                document.getElementById('loginLoading').style.display = 'none';
+            }
+        }
+
+        // Handle Signup
+        async function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const role = document.querySelector('input[name="role"]:checked').value;
+
+            // Validation
+            if (!name || !email || !password || !confirmPassword) {
+                showError('signup', 'Please fill in all fields');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('signup', 'Password must be at least 6 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('signup', 'Passwords do not match');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('signup', 'Please enter a valid email address');
+                return;
+            }
+
+            document.getElementById('signupLoading').style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_URL}/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError('signup', data.error || 'Signup failed. Please try again.');
+                    return;
+                }
+
+                // Success!
+                showSuccess('signup', `Account created successfully! ✅ Redirecting to login...`);
+
+                // Clear form
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
+                document.getElementById('signupConfirmPassword').value = '';
+                document.getElementById('signupName').value = '';
+
+                // Redirect to login after 3 seconds
+                setTimeout(() => {
+                    toggleForm();
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').focus();
+                }, 3000);
+
+            } catch (error) {
+                showError('signup', 'Network error. Please check your connection.');
+                console.error('Signup error:', error);
+            } finally {
+                document.getElementById('signupLoading').style.display = 'none';
+            }
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('load', function() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                window.location.href = '/dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
